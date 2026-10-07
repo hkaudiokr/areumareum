@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>알음알음 (시연용 프로토타입)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html { background:#EDE3D8; }
+  body {
+    font-family:"Noto Sans KR","Noto Sans",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    background:#EDE3D8; color:#2D2422; word-break:keep-all; overflow-wrap:break-word; line-height:1.6;
+    display:flex; justify-content:center; min-height:100vh;
+  }
+  h1,h2,h3 { font-family:"Plus Jakarta Sans","Noto Sans KR",sans-serif; letter-spacing:-0.01em; }
+  #app { width:100%; max-width:480px; background:#FFFAF4; min-height:100vh; position:relative;
+    box-shadow:0 0 24px rgba(45,36,34,.08); padding-bottom:96px; }
+  header.top { position:sticky; top:0; z-index:20; background:#FFFAF4; border-bottom:1px solid #F0E5D8;
+    padding:14px 20px; display:flex; align-items:center; gap:10px; }
+  .logo { width:36px; height:36px; flex:none; }
+  .brand b { font-size:16px; display:block; line-height:1.3; }
+  .brand small { font-size:11px; color:#9B8D89; }
+  .sample-badge { margin-left:auto; font-size:10px; font-weight:600; background:#FDF6EE; color:#A23F1A;
+    border:1px solid #F0E5D8; padding:4px 10px; border-radius:9999px; white-space:nowrap; }
+  .view { display:none; padding:20px 20px 28px; animation:fade .25s ease; }
+  .view.active { display:block; }
+  @keyframes fade { from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+
+  .hero { background:linear-gradient(135deg,#E8734A,#F2A35E); border-radius:24px; color:#fff;
+    padding:28px 24px; margin-bottom:24px; box-shadow:0 12px 32px -4px rgba(232,115,74,.22); }
+  .hero h1 { font-size:21px; line-height:1.5; margin-bottom:10px; color:#fff; }
+  .hero p { font-size:13px; opacity:.93; line-height:1.7; }
+  .section-title { font-size:16px; font-weight:700; margin:24px 0 12px; display:flex; align-items:center; gap:6px; color:#2D2422; }
+  .cat-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+  .cat { background:#fff; border:1px solid #F0E5D8; border-radius:16px; padding:12px 4px; text-align:center;
+    font-size:11px; font-weight:500; color:#5C4E4B; cursor:pointer; }
+  .cat .e { font-size:22px; display:block; margin-bottom:4px; }
+  .cat:active { background:#FDF6EE; }
+
+  .card { background:#fff; border:1px solid #F0E5D8; border-radius:24px; padding:20px; margin-bottom:16px;
+    cursor:pointer; box-shadow:0 4px 20px -2px rgba(45,36,34,.04), 0 2px 6px -1px rgba(45,36,34,.02); }
+  .card .row { display:flex; gap:14px; align-items:center; }
+  .avatar { width:56px; height:56px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center;
+    font-size:22px; font-weight:700; color:#fff; }
+  .card h3 { font-size:16px; color:#2D2422; }
+  .card h3 small { font-weight:500; color:#9B8D89; font-size:12px; }
+  .card .meta { font-size:12px; color:#9B8D89; margin:4px 0 8px; }
+  .verified { display:inline-flex; align-items:center; gap:3px; font-size:11px; font-weight:600; color:#4A7C59;
+    background:rgba(74,124,89,.1); padding:3px 10px; border-radius:9999px; margin-left:6px; vertical-align:2px;
+    font-family:"Noto Sans KR",sans-serif; letter-spacing:0; }
+  .praise { position:relative; font-size:14px; line-height:1.65; background:#FDF6EE; border-radius:20px;
+    padding:16px 16px 16px 42px; color:#2D2422; margin-top:12px; }
+  .praise::before { content:"\201C"; position:absolute; left:14px; top:8px; font-size:30px; color:#E8734A;
+    font-family:Georgia,serif; line-height:1; }
+
+  .chips { display:flex; gap:8px; overflow-x:auto; padding:4px 0 12px; scrollbar-width:none; }
+  .chips::-webkit-scrollbar { display:none; }
+  .chip { flex:none; font-size:13px; font-weight:500; height:36px; padding:0 16px; border-radius:9999px;
+    border:1px solid #F0E5D8; background:#FDF6EE; color:#5C4E4B; cursor:pointer; font-family:inherit; }
+  .chip.on { background:#E8734A; border-color:#E8734A; color:#fff; font-weight:600; }
+  .search { width:100%; height:52px; font-size:14px; padding:0 18px; border:1px solid #F0E5D8; border-radius:16px;
+    background:#fff; margin-bottom:8px; outline:none; font-family:inherit; color:#2D2422; }
+  .search::placeholder { color:#9B8D89; }
+  .search:focus { border:1.5px solid #E8734A; box-shadow:0 0 0 4px rgba(232,115,74,.15); }
+  select.region { width:100%; height:52px; font-size:14px; padding:0 16px; border:1px solid #F0E5D8; border-radius:16px;
+    background:#fff; margin-bottom:12px; font-family:inherit; color:#2D2422; }
+
+  .detail-head { text-align:center; padding:12px 0 4px; }
+  .detail-head .avatar { width:88px; height:88px; font-size:34px; margin:0 auto 12px; }
+  .detail-head h2 { font-size:22px; color:#2D2422; }
+  .detail-head .meta { font-size:13px; color:#9B8D89; margin-top:4px; }
+  .big-praise { position:relative; margin:16px 0; background:#FDF6EE; border-radius:20px;
+    padding:18px 18px 18px 46px; font-size:14px; line-height:1.65; color:#2D2422; }
+  .big-praise::before { content:"\201C"; position:absolute; left:16px; top:10px; font-size:32px; color:#E8734A;
+    font-family:Georgia,serif; line-height:1; }
+  .big-praise b { color:#E8734A; display:block; font-size:12px; margin-bottom:6px; font-family:"Noto Sans KR",sans-serif; }
+  .info-table { background:#fff; border:1px solid #F0E5D8; border-radius:20px; padding:6px 20px; margin-bottom:16px; }
+  .info-table div { display:flex; justify-content:space-between; gap:12px; font-size:13px; padding:11px 0;
+    border-bottom:1px solid #FDF6EE; }
+  .info-table div:last-child { border:none; }
+  .info-table span:first-child { color:#9B8D89; flex:none; }
+  .info-table span:last-child { text-align:right; color:#2D2422; }
+  .contact-btns { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:8px 0 20px; }
+  .contact-btns a { display:flex; align-items:center; justify-content:center; height:54px; text-decoration:none;
+    font-size:13px; font-weight:700; border-radius:9999px; font-family:"Noto Sans KR",sans-serif; }
+  .contact-btns a:active { transform:scale(.98); }
+  .btn-call { background:#E8734A; color:#fff; box-shadow:0 12px 32px -4px rgba(232,115,74,.22); }
+  .btn-kakao { background:#FAE100; color:#2D2422; }
+  .btn-sms { background:#FDE8DF; color:#E8734A; }
+  .back { font-size:13px; color:#9B8D89; background:none; border:none; cursor:pointer; margin-bottom:10px; font-family:inherit; }
+
+  .thanks-item { background:#fff; border:1px solid #F0E5D8; border-radius:20px; padding:16px 18px; margin-bottom:12px;
+    box-shadow:0 4px 20px -2px rgba(45,36,34,.04); }
+  .thanks-item .who { font-size:12px; font-weight:600; color:#9B8D89; margin-bottom:6px; }
+  .thanks-item p { font-size:14px; line-height:1.65; }
+  .form-card { background:#fff; border:1px solid #F0E5D8; border-radius:24px; padding:20px; margin-top:20px;
+    box-shadow:0 4px 20px -2px rgba(45,36,34,.04); }
+  .form-card h3 { font-size:16px; margin-bottom:12px; }
+  .form-card input, .form-card textarea, .form-card select { width:100%; font-size:14px; padding:13px 16px;
+    border:1px solid #F0E5D8; border-radius:16px; margin-bottom:10px; font-family:inherit; color:#2D2422; background:#fff; }
+  .form-card input::placeholder, .form-card textarea::placeholder { color:#9B8D89; }
+  .form-card input:focus, .form-card textarea:focus, .form-card select:focus { outline:none; border:1.5px solid #E8734A;
+    box-shadow:0 0 0 4px rgba(232,115,74,.15); }
+  .form-card textarea { min-height:96px; resize:vertical; }
+  .btn-primary { width:100%; height:54px; background:#E8734A; color:#fff; border:none; font-size:16px; font-weight:700;
+    border-radius:9999px; cursor:pointer; font-family:"Plus Jakarta Sans","Noto Sans KR",sans-serif;
+    box-shadow:0 12px 32px -4px rgba(232,115,74,.22); }
+  .btn-primary:active { transform:scale(.98); background:#D4623B; }
+
+  .donate-card { display:none; background:#FDF6EE; border:1px solid #F0E5D8;
+    border-radius:24px; padding:24px 20px; margin-top:16px; text-align:center; }
+  .donate-card.show { display:block; animation:fade .3s ease; }
+  .donate-card h3 { font-size:16px; margin-bottom:8px; }
+  .donate-card p { font-size:13px; color:#5C4E4B; margin-bottom:14px; line-height:1.7; }
+  .donate-amounts { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:14px; }
+  .donate-amounts button { font-size:13px; font-weight:600; height:40px; padding:0 18px; border-radius:9999px;
+    border:1px solid #F0E5D8; background:#fff; color:#5C4E4B; cursor:pointer; font-family:inherit; }
+  .donate-amounts button.on { background:#E8734A; color:#fff; border-color:#E8734A; }
+  .donate-note { font-size:11px; color:#9B8D89; margin-top:10px; }
+
+  .about-card { background:#fff; border:1px solid #F0E5D8; border-radius:24px; padding:20px; margin-bottom:16px;
+    box-shadow:0 4px 20px -2px rgba(45,36,34,.04); }
+  .about-card h3 { font-size:16px; margin-bottom:12px; color:#E8734A; }
+  .about-card li { font-size:14px; line-height:1.65; margin-bottom:10px; list-style:none; padding-left:26px; position:relative; color:#2D2422; }
+  .about-card li::before { content:"\2714"; position:absolute; left:0; color:#E8734A; font-size:13px; font-weight:700; }
+  .steps li::before { content:attr(data-n); background:#E8734A; color:#fff; width:20px; height:20px;
+    border-radius:50%; font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; }
+
+  nav.tabs { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px;
+    background:#fff; border-top:1px solid #F0E5D8; display:grid; grid-template-columns:repeat(4,1fr);
+    padding:10px 0 calc(10px + env(safe-area-inset-bottom)); z-index:20; }
+  nav.tabs button { background:none; border:none; font-size:11px; font-weight:500; color:#9B8D89; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:4px; font-family:inherit; }
+  nav.tabs button .i { font-size:22px; }
+  nav.tabs button.on { color:#E8734A; font-weight:700; }
+  .empty { text-align:center; color:#9B8D89; font-size:13px; padding:32px 0; line-height:1.8; }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <svg class="logo" viewBox="0 0 40 40"><circle cx="15" cy="17" r="10" fill="#e8734a"/><circle cx="26" cy="22" r="8" fill="#f2a35e" opacity=".85"/><circle cx="15" cy="17" r="3.5" fill="#fff"/><circle cx="26" cy="22" r="2.8" fill="#fff"/></svg>
+    <div class="brand"><b>알음알음</b><small>아는 사람이 소개하는, 믿을 수 있는 사장님</small></div>
+    <span class="sample-badge">시연용 · 샘플 데이터</span>
+  </header>
+
+  <!-- 홈 -->
+  <section class="view active" id="v-home">
+    <div class="hero">
+      <h1>아는 사람이 소개하는,<br>믿을 수 있는 사장님</h1>
+      <p>지인이 직접 써보고 추천한 사장님을 만나보세요.<br>칭찬과 배려가 오가는 따뜻한 연결입니다.</p>
+    </div>
+    <div class="section-title">⭐ 오늘의 추천 사장님</div>
+    <div id="home-recommend"></div>
+    <div class="section-title">🗂️ 카테고리로 찾기</div>
+    <div class="cat-grid" id="home-cats"></div>
+  </section>
+
+  <!-- 찾기 -->
+  <section class="view" id="v-search">
+    <input class="search" id="q" placeholder="사장님 이름, 업종, 지역으로 검색">
+    <div class="chips" id="cat-chips"></div>
+    <select class="region" id="region"><option value="">전체 지역</option></select>
+    <div id="search-list"></div>
+  </section>
+
+  <!-- 상세 -->
+  <section class="view" id="v-detail"></section>
+
+  <!-- 감사 인사 -->
+  <section class="view" id="v-thanks">
+    <div class="section-title">💌 감사 인사</div>
+    <p style="font-size:13px;color:#9B8D89;margin-bottom:12px">별점 대신, 따뜻한 한마디를 남겨주세요.</p>
+    <div id="thanks-list"></div>
+    <div class="form-card">
+      <h3>감사 인사 남기기</h3>
+      <select id="t-ceo"><option value="">사장님 선택</option></select>
+      <input id="t-name" placeholder="닉네임 (예: 안산맘)">
+      <textarea id="t-text" placeholder="어떤 점이 좋았는지 따뜻하게 적어주세요"></textarea>
+      <button class="btn-primary" onclick="addThanks()">감사 인사 남기기</button>
+    </div>
+    <div class="donate-card" id="donate-card">
+      <h3>☕ 감사한 마음, 커피 한 잔으로 전할까요?</h3>
+      <p>후원은 전액 서비스 운영에 쓰입니다.<br>금액은 전적으로 자유예요. (시연용이라 실제 결제되지 않아요)</p>
+      <div class="donate-amounts">
+        <button onclick="pickAmt(this)">3,000원</button>
+        <button onclick="pickAmt(this)">5,000원</button>
+        <button onclick="pickAmt(this)">10,000원</button>
+        <button onclick="pickAmt(this)">직접 입력</button>
+      </div>
+      <button class="btn-primary" onclick="alert('시연용입니다. 따뜻한 마음만 받겠습니다 :)')">감사 후원하기</button>
+      <div class="donate-note">'감사 후원'은 기부가 아니며, 서비스 이용의 조건이 아닙니다.</div>
+    </div>
+  </section>
+
+  <!-- 소개 -->
+  <section class="view" id="v-about">
+    <div class="about-card">
+      <h3>💛 서비스 취지</h3>
+      <ul>
+        <li>광고가 아닌, 지인의 진짜 추천으로 사장님을 소개합니다.</li>
+        <li>비난·욕·무시는 없어요. 칭찬·위로·배려의 말만 오갑니다.</li>
+        <li>수수료·회비 없이 시작해요. 운영은 자발적 후원으로 이어갑니다.</li>
+      </ul>
+    </div>
+    <div class="about-card">
+      <h3>🙋 방문자 사용방법</h3>
+      <ul class="steps">
+        <li data-n="1">카테고리·지역·키워드로 사장님을 찾아보세요.</li>
+        <li data-n="2">지인의 칭찬 한 줄과 감사 인사를 확인하세요.</li>
+        <li data-n="3">연락하기 버튼으로 전화·카톡·문자를 보내세요.</li>
+      </ul>
+    </div>
+    <div class="about-card">
+      <h3>🏪 사장님 등록방법</h3>
+      <ul class="steps">
+        <li data-n="1">아는 사장님의 초대 링크로 접속하세요.</li>
+        <li data-n="2">프로필(사진·칭찬 한 줄·연락처)을 등록하세요.</li>
+        <li data-n="3">등록 즉시 목록에 노출되고, 지인 초대도 할 수 있어요.</li>
+      </ul>
+    </div>
+    <div class="about-card">
+      <h3>📜 이용 안내</h3>
+      <ul>
+        <li>운영자는 연결까지만 돕고, 거래의 당사자가 아닙니다.</li>
+        <li>분쟁은 당사자 간에 해결해 주세요.</li>
+        <li>부적절한 표현은 '배려 요청'으로 알려주세요.</li>
+      </ul>
+    </div>
+  </section>
+
+  <nav class="tabs">
+    <button class="on" onclick="go('home',this)"><span class="i">🏠</span>홈</button>
+    <button onclick="go('search',this)"><span class="i">🔍</span>사장님 찾기</button>
+    <button onclick="go('thanks',this)"><span class="i">💌</span>감사 인사</button>
+    <button onclick="go('about',this)"><span class="i">💛</span>소개</button>
+  </nav>
+</div>
+
+<script>
+const CEOS = [
+  {id:1, name:"김민수", shop:"민수 보험설계", cat:"보험", region:"서울 강남구", career:"12년차",
+   praise:"어려운 약관을 쉽게 풀어줘서 믿음이 가요", color:"#e8734a", emoji:"🛡️",
+   intro:"가족의 미래를 함께 설계하는 보험설계사입니다."},
+  {id:2, name:"이지영", shop:"지영 영어학원", cat:"학원", region:"경기 안산시", career:"8년차",
+   praise:"아이 눈높이에서 가르쳐줘서 부모님들이 먼저 찾아요", color:"#7fb069", emoji:"📚",
+   intro:"아이 한 명 한 명을 기억하는 작은 학원입니다."},
+  {id:3, name:"박철호", shop:"철호에어컨", cat:"에어컨 설치", region:"경기 수원시", career:"15년차",
+   praise:"마무리가 깔끔해서 재주문율이 정말 높아요", color:"#5aa9e6", emoji:"❄️",
+   intro:"설치 후 청소까지 완벽하게 마무리합니다."},
+  {id:4, name:"최동현", shop:"동현사운드", cat:"스피커 설치", region:"경기 안산시", career:"10년차",
+   praise:"교회 음향은 이 분께 맡기면 끝이라는 말이 있어요", color:"#9b5de5", emoji:"🔊",
+   intro:"공간에 맞는 소리를 설계해 드립니다."},
+  {id:5, name:"정수빈", shop:"수빈배터리", cat:"자동차 배터리", region:"인천 전 지역", career:"7년차",
+   praise:"출장이 빨라서 급할 때 최고예요", color:"#f15bb5", emoji:"🔋",
+   intro:"30분 이내 출장을 약속드립니다."},
+  {id:6, name:"한지민", shop:"지민도배", cat:"도배", region:"서울 노원구", career:"11년차",
+   praise:"벽지 재단 하나하나에 정성이 보여요", color:"#f2a35e", emoji:"🧱",
+   intro:"틈새 하나 없이 정직하게 시공합니다."},
+  {id:7, name:"오세훈", shop:"세훈장판", cat:"장판", region:"경기 부천시", career:"9년차",
+   praise:"먼지 하나 없이 깔끔하게 시공해줘요", color:"#00bbf9", emoji:"🏠",
+   intro:"아이 있는 집도 안심할 수 있는 친환경 자재만 씁니다."},
+  {id:8, name:"강서연", shop:"서연과일", cat:"과일 판매", region:"전국 택배", career:"6년차",
+   praise:"당도 선별이 확실해서 선물용으로 최고예요", color:"#ef476f", emoji:"🍎",
+   intro:"아침에 딴 과일을 당일 발송합니다."},
+  {id:9, name:"윤태양", shop:"태양편의점", cat:"편의점", region:"경기 안산시", career:"5년차",
+   praise:"동네 사랑방 같은 따뜻한 가게예요", color:"#ffd166", emoji:"🏪",
+   intro:"택배 보관, 공과금 납부도 편하게 들러주세요."},
+  {id:10, name:"신예은", shop:"예은홈케어", cat:"입주 청소", region:"경기 안양시", career:"4년차",
+   praise:"새집처럼 만들어줘서 정말 감동했어요", color:"#06d6a0", emoji:"✨",
+   intro:"구석구석 손이 닿는 청소를 합니다."},
+];
+const CATS = ["보험","학원","에어컨 설치","스피커 설치","자동차 배터리","도배","장판","과일 판매","편의점","입주 청소"];
+const CAT_EMOJI = {"보험":"🛡️","학원":"📚","에어컨 설치":"❄️","스피커 설치":"🔊","자동차 배터리":"🔋","도배":"🧱","장판":"🏠","과일 판매":"🍎","편의점":"🏪","입주 청소":"✨"};
+let thanks = [
+  {ceo:"박철호", name:"수원맘", text:"무더운 날 바로 와주셔서 정말 감사했어요. 덕분에 시원한 여름 나고 있습니다!"},
+  {ceo:"강서연", name:"선물장인", text:"어머님 생신 선물로 보냈는데 과일이 너무 싱싱하다고 좋아하셨어요."},
+  {ceo:"최동현", name:"교회집사", text:"예배당 울림이 완전히 잡혔어요. 성도님들이 다들 좋아하세요."},
+];
+let activeCat = "";
+
+function cardHTML(c){
+  return `<div class="card" onclick="openDetail(${c.id})">
+    <div class="row"><div class="avatar" style="background:${c.color}">${c.emoji}</div>
+    <div><h3>${c.name} 사장님<span class="verified">✓ 지인 인증</span><br><small>· ${c.shop}</small></h3>
+    <div class="meta">${c.cat} · ${c.region}</div></div></div>
+    <div class="praise">“${c.praise}”</div></div>`;
+}
+function renderHome(){
+  document.getElementById('home-recommend').innerHTML = [CEOS[2],CEOS[3],CEOS[7]].map(cardHTML).join('');
+  document.getElementById('home-cats').innerHTML = CATS.map(c=>
+    `<div class="cat" onclick="goCat('${c}')"><span class="e">${CAT_EMOJI[c]}</span>${c}</div>`).join('');
+}
+function renderChips(){
+  document.getElementById('cat-chips').innerHTML =
+    `<button class="chip${activeCat===''?' on':''}" onclick="setCat('')">전체</button>` +
+    CATS.map(c=>`<button class="chip${activeCat===c?' on':''}" onclick="setCat('${c}')">${c}</button>`).join('');
+}
+function renderRegions(){
+  const rs=[...new Set(CEOS.map(c=>c.region))];
+  document.getElementById('region').innerHTML = `<option value="">전체 지역</option>` +
+    rs.map(r=>`<option>${r}</option>`).join('');
+}
+function renderList(){
+  const q=document.getElementById('q').value.trim();
+  const r=document.getElementById('region').value;
+  const list=CEOS.filter(c=>
+    (activeCat===''||c.cat===activeCat) &&
+    (r===''||c.region===r) &&
+    (q===''||(c.name+c.shop+c.cat+c.region).includes(q)));
+  document.getElementById('search-list').innerHTML =
+    list.length? list.map(cardHTML).join('') : `<div class="empty">조건에 맞는 사장님이 없어요.<br>다른 조건으로 찾아보세요.</div>`;
+}
+function setCat(c){ activeCat=c; renderChips(); renderList(); }
+function goCat(c){ activeCat=c; renderChips(); renderList();
+  document.querySelectorAll('nav.tabs button').forEach((b,i)=>b.classList.toggle('on',i===1));
+  show('search'); }
+function openDetail(id){
+  const c=CEOS.find(x=>x.id===id);
+  const t=thanks.filter(x=>x.ceo===c.name);
+  document.getElementById('v-detail').innerHTML = `
+    <button class="back" onclick="backTo()">← 목록으로</button>
+    <div class="detail-head"><div class="avatar" style="background:${c.color}">${c.emoji}</div>
+      <h2>${c.name} 사장님</h2><div class="meta">${c.shop} · ${c.cat} · ${c.region}</div>
+      <div style="margin-top:8px"><span class="verified" style="margin-left:0">✓ 지인 인증 완료</span></div></div>
+    <div class="big-praise"><b>💛 지인의 칭찬 한 줄</b>“${c.praise}”</div>
+    <div class="info-table">
+      <div><span>소개</span><span>${c.intro}</span></div>
+      <div><span>경력</span><span>${c.career}</span></div>
+      <div><span>활동 지역</span><span>${c.region}</span></div>
+    </div>
+    <div class="section-title">📞 연락하기</div>
+    <div class="contact-btns">
+      <a class="btn-call" href="tel:010-0000-0000">전화 걸기</a>
+      <a class="btn-kakao" href="#" onclick="alert('시연용입니다 :)');return false;">카톡 연결</a>
+      <a class="btn-sms" href="sms:010-0000-0000">문자 보내기</a>
+    </div>
+    <div class="section-title">💌 감사 인사 (${t.length})</div>
+    ${t.length? t.map(x=>`<div class="thanks-item"><div class="who">${x.name} 님</div><p>${x.text}</p></div>`).join('')
+      : `<div class="empty">아직 감사 인사가 없어요.<br>첫 번째로 남겨보세요.</div>`}`;
+  show('detail'); window.scrollTo(0,0);
+}
+let lastTab='home';
+function backTo(){ show('search'); }
+function show(v){
+  document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));
+  document.getElementById('v-'+v).classList.add('active'); window.scrollTo(0,0);
+}
+function go(v,btn){
+  lastTab=v;
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); show(v);
+}
+function renderThanks(){
+  document.getElementById('thanks-list').innerHTML = thanks.map(x=>{
+    const c=CEOS.find(c=>c.name===x.ceo);
+    return `<div class="thanks-item"><div class="who">${x.name} 님 → ${c?c.shop+' '+x.ceo+' 사장님':x.ceo}</div><p>${x.text}</p></div>`;
+  }).join('');
+  document.getElementById('t-ceo').innerHTML = `<option value="">사장님 선택</option>` +
+    CEOS.map(c=>`<option value="${c.name}">${c.shop} ${c.name} 사장님</option>`).join('');
+}
+function addThanks(){
+  const ceo=document.getElementById('t-ceo').value;
+  const name=document.getElementById('t-name').value.trim();
+  const text=document.getElementById('t-text').value.trim();
+  if(!ceo||!name||!text){ alert('사장님, 닉네임, 내용을 모두 입력해주세요.'); return; }
+  if(/(씨발|병신|죽어|사기꾼|개새)/.test(text)){ alert('따뜻한 말만 남겨주세요 💛'); return; }
+  thanks.unshift({ceo,name,text});
+  document.getElementById('t-name').value=''; document.getElementById('t-text').value='';
+  renderThanks();
+  document.getElementById('donate-card').classList.add('show');
+  document.getElementById('donate-card').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function pickAmt(b){
+  document.querySelectorAll('.donate-amounts button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  if(b.textContent==='직접 입력'){ const v=prompt('후원 금액을 입력해주세요 (원)'); if(v) b.textContent=v+'원'; }
+}
+document.getElementById('q').addEventListener('input',renderList);
+document.getElementById('region').addEventListener('change',renderList);
+renderHome(); renderChips(); renderRegions(); renderList(); renderThanks();
+</script>
+</body>
+</html>
