@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
 <title>알음알음 (시연용 프로토타입)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -178,7 +179,7 @@
     <div class="form-card">
       <h3>감사 인사 남기기</h3>
       <select id="t-ceo"><option value="">사장님 선택</option></select>
-      <input id="t-name" placeholder="닉네임 (예: 안산맘)">
+      <input id="t-name" placeholder="닉네임 (예: 예시닉네임)">
       <textarea id="t-text" placeholder="어떤 점이 좋았는지 따뜻하게 적어주세요"></textarea>
       <button class="btn-primary" onclick="addThanks()">감사 인사 남기기</button>
     </div>
@@ -241,44 +242,44 @@
 </div>
 
 <script>
-const CEOS = [
-  {id:1, name:"김민수", shop:"민수 보험설계", cat:"보험", region:"서울 강남구", career:"12년차",
+const CEOS = [  // 시연용 가상 데이터 (실존 인물·업체 아님)
+  {id:1, name:"예시 A", shop:"샘플보험", cat:"보험", region:"샘플시 가동", career:"12년차",
    praise:"어려운 약관을 쉽게 풀어줘서 믿음이 가요", color:"#e8734a", emoji:"🛡️",
-   intro:"가족의 미래를 함께 설계하는 보험설계사입니다."},
-  {id:2, name:"이지영", shop:"지영 영어학원", cat:"학원", region:"경기 안산시", career:"8년차",
+   intro:"(예시) 가족의 미래를 함께 설계하는 보험설계사입니다."},
+  {id:2, name:"예시 B", shop:"샘플학원", cat:"학원", region:"샘플시 나동", career:"8년차",
    praise:"아이 눈높이에서 가르쳐줘서 부모님들이 먼저 찾아요", color:"#7fb069", emoji:"📚",
-   intro:"아이 한 명 한 명을 기억하는 작은 학원입니다."},
-  {id:3, name:"박철호", shop:"철호에어컨", cat:"에어컨 설치", region:"경기 수원시", career:"15년차",
+   intro:"(예시) 아이 한 명 한 명을 기억하는 작은 학원입니다."},
+  {id:3, name:"예시 C", shop:"샘플에어컨", cat:"에어컨 설치", region:"예시시 다동", career:"15년차",
    praise:"마무리가 깔끔해서 재주문율이 정말 높아요", color:"#5aa9e6", emoji:"❄️",
-   intro:"설치 후 청소까지 완벽하게 마무리합니다."},
-  {id:4, name:"최동현", shop:"동현사운드", cat:"스피커 설치", region:"경기 안산시", career:"10년차",
-   praise:"교회 음향은 이 분께 맡기면 끝이라는 말이 있어요", color:"#9b5de5", emoji:"🔊",
-   intro:"공간에 맞는 소리를 설계해 드립니다."},
-  {id:5, name:"정수빈", shop:"수빈배터리", cat:"자동차 배터리", region:"인천 전 지역", career:"7년차",
+   intro:"(예시) 설치 후 청소까지 완벽하게 마무리합니다."},
+  {id:4, name:"예시 D", shop:"샘플꽃집", cat:"꽃집", region:"샘플시 라동", career:"10년차",
+   praise:"계절마다 꽃 구성이 달라서 선물하기 좋아요", color:"#9b5de5", emoji:"💐",
+   intro:"(예시) 그날 들어온 꽃으로 꽃다발을 만들어 드립니다."},
+  {id:5, name:"예시 E", shop:"샘플배터리", cat:"자동차 배터리", region:"예시시 전 지역", career:"7년차",
    praise:"출장이 빨라서 급할 때 최고예요", color:"#f15bb5", emoji:"🔋",
-   intro:"30분 이내 출장을 약속드립니다."},
-  {id:6, name:"한지민", shop:"지민도배", cat:"도배", region:"서울 노원구", career:"11년차",
+   intro:"(예시) 30분 이내 출장을 약속드립니다."},
+  {id:6, name:"예시 F", shop:"샘플도배", cat:"도배", region:"샘플시 마동", career:"11년차",
    praise:"벽지 재단 하나하나에 정성이 보여요", color:"#f2a35e", emoji:"🧱",
-   intro:"틈새 하나 없이 정직하게 시공합니다."},
-  {id:7, name:"오세훈", shop:"세훈장판", cat:"장판", region:"경기 부천시", career:"9년차",
+   intro:"(예시) 틈새 하나 없이 정직하게 시공합니다."},
+  {id:7, name:"예시 G", shop:"샘플장판", cat:"장판", region:"예시시 바동", career:"9년차",
    praise:"먼지 하나 없이 깔끔하게 시공해줘요", color:"#00bbf9", emoji:"🏠",
-   intro:"아이 있는 집도 안심할 수 있는 친환경 자재만 씁니다."},
-  {id:8, name:"강서연", shop:"서연과일", cat:"과일 판매", region:"전국 택배", career:"6년차",
+   intro:"(예시) 아이 있는 집도 안심할 수 있는 친환경 자재만 씁니다."},
+  {id:8, name:"예시 H", shop:"샘플상회", cat:"과일 판매", region:"전국 택배", career:"6년차",
    praise:"당도 선별이 확실해서 선물용으로 최고예요", color:"#ef476f", emoji:"🍎",
-   intro:"아침에 딴 과일을 당일 발송합니다."},
-  {id:9, name:"윤태양", shop:"태양편의점", cat:"편의점", region:"경기 안산시", career:"5년차",
+   intro:"(예시) 아침에 딴 과일을 당일 발송합니다."},
+  {id:9, name:"예시 I", shop:"샘플편의점", cat:"편의점", region:"샘플시 가동", career:"5년차",
    praise:"동네 사랑방 같은 따뜻한 가게예요", color:"#ffd166", emoji:"🏪",
-   intro:"택배 보관, 공과금 납부도 편하게 들러주세요."},
-  {id:10, name:"신예은", shop:"예은홈케어", cat:"입주 청소", region:"경기 안양시", career:"4년차",
+   intro:"(예시) 택배 보관, 공과금 납부도 편하게 들러주세요."},
+  {id:10, name:"예시 J", shop:"샘플홈케어", cat:"입주 청소", region:"예시시 사동", career:"4년차",
    praise:"새집처럼 만들어줘서 정말 감동했어요", color:"#06d6a0", emoji:"✨",
-   intro:"구석구석 손이 닿는 청소를 합니다."},
+   intro:"(예시) 구석구석 손이 닿는 청소를 합니다."},
 ];
-const CATS = ["보험","학원","에어컨 설치","스피커 설치","자동차 배터리","도배","장판","과일 판매","편의점","입주 청소"];
-const CAT_EMOJI = {"보험":"🛡️","학원":"📚","에어컨 설치":"❄️","스피커 설치":"🔊","자동차 배터리":"🔋","도배":"🧱","장판":"🏠","과일 판매":"🍎","편의점":"🏪","입주 청소":"✨"};
+const CATS = ["보험","학원","에어컨 설치","꽃집","자동차 배터리","도배","장판","과일 판매","편의점","입주 청소"];
+const CAT_EMOJI = {"보험":"🛡️","학원":"📚","에어컨 설치":"❄️","꽃집":"💐","자동차 배터리":"🔋","도배":"🧱","장판":"🏠","과일 판매":"🍎","편의점":"🏪","입주 청소":"✨"};
 let thanks = [
-  {ceo:"박철호", name:"수원맘", text:"무더운 날 바로 와주셔서 정말 감사했어요. 덕분에 시원한 여름 나고 있습니다!"},
-  {ceo:"강서연", name:"선물장인", text:"어머님 생신 선물로 보냈는데 과일이 너무 싱싱하다고 좋아하셨어요."},
-  {ceo:"최동현", name:"교회집사", text:"예배당 울림이 완전히 잡혔어요. 성도님들이 다들 좋아하세요."},
+  {ceo:"예시 C", name:"예시닉네임1", text:"무더운 날 바로 와주셔서 정말 감사했어요. 덕분에 시원한 여름 나고 있습니다!"},
+  {ceo:"예시 H", name:"예시닉네임2", text:"어머님 생신 선물로 보냈는데 과일이 너무 싱싱하다고 좋아하셨어요."},
+  {ceo:"예시 D", name:"예시닉네임3", text:"꽃다발이 사진보다 훨씬 예뻤어요. 받는 분이 정말 좋아하셨어요."},
 ];
 let activeCat = "";
 
